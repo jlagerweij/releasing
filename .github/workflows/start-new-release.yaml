@@ -47,3 +47,30 @@ jobs:
           git commit --message "Bump version for release ${{ steps.read_version.outputs.version }}."
           git push origin release/${{ steps.read_version.outputs.version }}
 
+
+      - name: Checkout develop
+        run: |
+          git checkout develop
+
+      - name: Bump version for next development iteration
+        id: bump_version
+        uses: christian-draeger/increment-semantic-version@1.0.2
+        with:
+          current-version: ${{ steps.read_version.outputs.version }}
+          version-fragment: ${{ env.version_fragment }}
+      - name: Update applicationVersion to next development SNAPSHOT version
+        uses: jacobtomlinson/gha-find-replace@0.1.2
+        id: change_next_development_version
+        with:
+          find: "([ ]*)applicationVersion([ ]*)=([ ]*)[^\r\n]*"
+          replace: "${1}applicationVersion${2}=${3}'${{ steps.bump_version.outputs.next-version }}-SNAPSHOT'"
+          include: "build.gradle"
+      - name: Verify the applicationVersion has changed in a single file
+        run: |
+          [[ 1 == ${{ steps.change_next_development_version.outputs.modifiedFiles }} ]]
+
+      - name: Add, commit and push to develop
+        run: |
+          git add build.gradle
+          git commit --message "Next development iteration for version ${{ steps.bump_version.outputs.next-version }}-SNAPSHOT."
+          git push origin develop
