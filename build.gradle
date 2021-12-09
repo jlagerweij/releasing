@@ -1,8 +1,14 @@
 buildscript {
     ext {
+        groupName = "entrnce"
         applicationVersion = '2.35.0-SNAPSHOT'
     }
 }
 plugins {
     id "java"
+}
+
+allprojects {
+    group = "${groupName}"
+    version = "${applicationVersion}"
 }
