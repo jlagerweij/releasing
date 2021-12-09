@@ -3,9 +3,9 @@ name: Start New Release
 on:
   workflow_dispatch:
     inputs:
-      version_bump_type:
-        description: 'Version bump: major, minor or patch'
-        default: 'minor'
+      version_fragment:
+        description: 'The versions fragment you want to increment. Possible options are [ major | feature | bug | alpha | beta | rc ]'
+        default: 'feature'
         required: true
 
 jobs:
@@ -41,11 +41,10 @@ jobs:
           replace: ""
           include: "build.gradle"
 
-      - name: Add, commit and push to release branch
+      - name: Add commit to release branch
         run: |
           git add build.gradle
           git commit --message "Bump version for release ${{ steps.read_version.outputs.version }}."
-          git push origin release/${{ steps.read_version.outputs.version }}
 
 
       - name: Checkout develop
@@ -57,7 +56,7 @@ jobs:
         uses: christian-draeger/increment-semantic-version@1.0.2
         with:
           current-version: ${{ steps.read_version.outputs.version }}
-          version-fragment: feature
+          version-fragment: ${{ env.version_fragment }}
       - name: Update applicationVersion to next development SNAPSHOT version
         uses: jacobtomlinson/gha-find-replace@0.1.2
         id: change_next_development_version
@@ -73,4 +72,7 @@ jobs:
         run: |
           git add build.gradle
           git commit --message "Next development iteration for version ${{ steps.bump_version.outputs.next-version }}-SNAPSHOT."
+
+      - name: Push changes to Git
+          git push origin release/${{ steps.read_version.outputs.version }}
           git push origin develop
