@@ -34,6 +34,13 @@ jobs:
         run: |
           git checkout -b release/${{ steps.read_version.outputs.version }}
 
+      - name: Remove occurences of SNAPSHOT from build gradle
+        uses: jacobtomlinson/gha-find-replace@0.1.2
+        with:
+          find: "-SNAPSHOT"
+          replace: ""
+          include: "build.gradle"
+
       - name: Add, commit and push to release branch
         run: |
           git add build.gradle
