@@ -1,7 +1,7 @@
 buildscript {
     ext {
         groupName = "entrnce"
-        applicationVersion = '2.35.0-SNAPSHOT'
+        applicationVersion = '2.35.0'
     }
 }
 plugins {
