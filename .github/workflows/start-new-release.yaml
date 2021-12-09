@@ -56,7 +56,7 @@ jobs:
         uses: christian-draeger/increment-semantic-version@1.0.2
         with:
           current-version: ${{ steps.read_version.outputs.version }}
-          version-fragment: ${{ env.version_fragment }}
+          version-fragment: ${{ github.event.inputs.version_fragment }}
       - name: Update applicationVersion to next development SNAPSHOT version
         uses: jacobtomlinson/gha-find-replace@0.1.2
         id: change_next_development_version
