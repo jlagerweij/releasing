@@ -45,4 +45,5 @@ jobs:
         run: |
           git add build.gradle
           git commit --message "Bump version for release ${{ steps.read_version.outputs.version }}."
+          git push origin release/${{ steps.read_version.outputs.version }}
 
