@@ -74,5 +74,6 @@ jobs:
           git commit --message "Next development iteration for version ${{ steps.bump_version.outputs.next-version }}-SNAPSHOT."
 
       - name: Push changes to Git
+        run: |
           git push origin release/${{ steps.read_version.outputs.version }}
           git push origin develop
