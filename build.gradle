@@ -1,3 +1,8 @@
+buildscript {
+    ext {
+        applicationVersion = '2.35.0-SNAPSHOT'
+    }
+}
 plugins {
     id "java"
 }
