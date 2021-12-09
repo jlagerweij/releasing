@@ -67,6 +67,5 @@ jobs:
           git tag ${{ env.branch }}
           git tag
       - name: Tag push in Git
-        if: github.ref != 'refs/heads/develop' &&
-          ${{ !env.ACT }}
+        if: github.ref != 'refs/heads/develop' &&  !env.ACT
         run: git push origin --tags

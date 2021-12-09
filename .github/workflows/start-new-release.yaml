@@ -1,0 +1,41 @@
+name: Start New Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_bump_type:
+        description: 'Version bump: major, minor or patch'
+        default: 'minor'
+        required: true
+
+jobs:
+  start-new-release:
+    name: Start New Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the branch to release
+        uses: actions/checkout@v2
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Initialize mandatory git config
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "github-actions@entrnce.com"
+
+      - name: Read version and remove SNAPSHOT
+        id: read_version
+        run: |
+          version=$(sh ./gradlew --build-cache properties | grep "^version:" | cut -d" " -f2 | sed 's/-SNAPSHOT//g')
+          echo "::set-output name=version::$version"
+
+      - name: Create Release branch
+        run: |
+          git checkout -b release/${{ steps.read_version.outputs.version }}
+
+      - name: Add, commit and push to release branch
+        run: |
+          git add build.gradle
+          git commit --message "Bump version for release ${{ steps.read_version.outputs.version }}."
+
